@@ -1,0 +1,79 @@
+#!/bin/bash
+
+SERIAL=""
+ALIAS=""
+ADB_ALIAS_FOLDER="$HOME/adb_alias"
+
+usage() {
+	cat << _EOF_
+adb_alias tool
+Usage:
+set_adb_alias [SERIAL] [ALIAS]
+    It will set alias 'adb_{ALIAS}' as 'adb -s {SERIAL}'
+    example: 
+        set_adb_alias 11f7cd tango
+    Then you can use 'adb_tango shell' to login device 11f7cd's shell
+
+unset_adb_alias [ALIAS]
+    It will unset alias you set prviously
+    example: 
+        unset_adb_alias tango
+
+show_adb_alias
+    Show all alias you set
+    
+_EOF_
+}
+
+set_adb_alias() {
+	if [ "$1" == "" ] || [ "$2" == "" ]; then
+		usage
+		return
+	fi
+
+	local sn="$1"
+	local al="adb_$2"
+
+	echo "Creating alias $sn -> $al"
+
+	echo "$sn" > "$ADB_ALIAS_FOLDER/$al"
+	alias "$(eval echo $al)"'='"$(eval echo adb -s $sn)"
+}
+
+unset_adb_alias() {
+	if [ "$1" == "" ]; then
+		usage
+		return
+	fi
+
+	local al="$1"
+
+	echo "unalias $al"
+	unalias $al
+	rm "$ADB_ALIAS_FOLDER/$al"
+}
+
+show_adb_alias() {
+	for f in `ls $ADB_ALIAS_FOLDER`
+	do
+		echo "Device `cat $ADB_ALIAS_FOLDER/$f` as alias $f"
+	done
+}
+
+if [ ! -d "$ADB_ALIAS_FOLDER" ]; then
+	printf "Creating alias folder on $ADB_ALIAS_FOLDER\n\n"
+	mkdir "$ADB_ALIAS_FOLDER"
+fi
+
+for f in `ls $ADB_ALIAS_FOLDER`
+do
+	ALIAS="$f"
+	SERIAL="`cat $ADB_ALIAS_FOLDER/$f`"
+
+	echo "Create alias $SERIAL -> $ALIAS"
+	alias "$(eval echo $ALIAS)"'='"$(eval echo adb -s $SERIAL)"
+done
+
+printf "\n"
+usage
+
