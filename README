@@ -7,6 +7,10 @@ Which might be annoying
 This tool help you to create adb alias to these devices easily
 
 Usage:
+First step: $ source adb_alias
+
+Then you can use this tool by below command:
+
 set_adb_alias [SERIAL] [ALIAS]
     It will set alias 'adb_{ALIAS}' as 'adb -s {SERIAL}'
     example:
