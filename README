@@ -10,13 +10,15 @@ Usage:
 set_adb_alias [SERIAL] [ALIAS]
     It will set alias 'adb_{ALIAS}' as 'adb -s {SERIAL}'
     example:
-        set_adb_alias 11f7cd tango
+        $ set_adb_alias 11f7cd tango
+
     Then you can use 'adb_tango shell' to login device 11f7cd's shell
+        $ adb_tangle shell
 
 unset_adb_alias [ALIAS]
     It will unset alias you set prviously
     example:
-        unset_adb_alias tango
+        $ unset_adb_alias tango
 
 show_adb_alias
     Show all alias you have set
